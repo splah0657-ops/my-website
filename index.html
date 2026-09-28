@@ -118,9 +118,25 @@
     @media(max-width:560px){
       h1{font-size:68px;letter-spacing:-4px}.lead{font-size:17px}.hero{padding-top:115px}.works{grid-template-columns:1fr}.facts{grid-template-columns:1fr 1fr}.hero-art{min-height:350px}.actions .btn{width:100%;justify-content:center}
     }
+
+    /* Секретное обновление — обратный отсчёт */
+    .secret-update{position:fixed;top:0;left:0;right:0;z-index:70;height:46px;background:linear-gradient(90deg,#16090b,#2a0b0e 50%,#16090b);border-bottom:1px solid rgba(226,27,35,.45);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 30px rgba(0,0,0,.28)}
+    .secret-update-inner{width:min(1180px,92%);display:flex;align-items:center;justify-content:center;gap:16px;text-align:center}
+    .secret-update-title{font-size:12px;font-weight:800;letter-spacing:1.8px;color:#ff5b61;text-transform:uppercase;white-space:nowrap}
+    .secret-countdown{font-size:13px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:.2px}
+    .secret-countdown strong{color:#ff5b61}
+    header{top:46px!important}
+    .hero{padding-top:191px!important}
+    @media(max-width:560px){.secret-update{height:58px}.secret-update-inner{gap:5px;flex-direction:column}.secret-update-title{font-size:10px}.secret-countdown{font-size:11px}header{top:58px!important}.hero{padding-top:173px!important}}
   </style>
 </head>
 <body>
+<div class="secret-update" id="secretUpdate" role="status" aria-live="polite">
+  <div class="secret-update-inner">
+    <div class="secret-update-title">СЕКРЕТНОЕ ОБНОВЛЕНИЕ!</div>
+    <div class="secret-countdown" id="secretCountdown">До обновления: загрузка…</div>
+  </div>
+</div>
 <header>
   <div class="wrap nav">
     <a class="logo" href="#home"><span>S</span>PLAH</a>
@@ -217,7 +233,7 @@
       <form class="ajax-form" action="https://formsubmit.co/ajax/splah0657@gmail.com" method="POST">
         <input type="hidden" name="_subject" value="Новое сообщение с портфолио SPLAH">
         <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" name="_template" value="box">
+        <input type="hidden" name="_template" value="table">
         <label>Ваше имя<input name="name" required placeholder="Как к вам обращаться?"></label>
         <label>Ваш Email<input type="email" name="email" required placeholder="example@mail.com"></label>
         <label>Что вы хотите сделать?<textarea name="message" required placeholder="Расскажите о проекте или заказе..."></textarea></label>
@@ -241,7 +257,7 @@
       <form class="ajax-form" action="https://formsubmit.co/ajax/splah0657@gmail.com" method="POST">
         <input type="hidden" name="_subject" value="Обращение в поддержку — SPLAH">
         <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" name="_template" value="box">
+        <input type="hidden" name="_template" value="table">
         <label>Имя<input name="name" required placeholder="Ваше имя или никнейм"></label>
         <label>Email для ответа<input type="email" name="email" required placeholder="example@mail.com"></label>
         <label>Какая у вас проблема?<textarea name="problem" required placeholder="Опишите проблему..."></textarea></label>
@@ -311,6 +327,27 @@
   document.querySelectorAll('.links a').forEach(a=>a.addEventListener('click',()=>links.classList.remove('open')));
   const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('show')}),{threshold:.08});
   document.querySelectorAll('.reveal').forEach(e=>obs.observe(e));
+
+  // Таймер до 2 октября 2026, 19:00 по Москве (UTC+3)
+  (() => {
+    const el = document.getElementById('secretCountdown');
+    const target = new Date('2026-10-02T19:00:00+03:00').getTime();
+    const pad = n => String(n).padStart(2, '0');
+    const tick = () => {
+      const diff = target - Date.now();
+      if (diff <= 0) {
+        el.innerHTML = '<strong>ОБНОВЛЕНИЕ ВЫШЛО!</strong>';
+        return;
+      }
+      const days = Math.floor(diff / 86400000);
+      const hours = Math.floor((diff % 86400000) / 3600000);
+      const minutes = Math.floor((diff % 3600000) / 60000);
+      const seconds = Math.floor((diff % 60000) / 1000);
+      el.textContent = `До обновления: ${days} дн. ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+      setTimeout(tick, 250);
+    };
+    tick();
+  })();
 </script>
 </body>
 </html>
